@@ -50,12 +50,23 @@ export class UsersService {
       throw new BadRequestException('Error Getting User', { cause: error });
     }
   }
+  async findOneByMobile(mobile: string) {
+    try {
+      const user = await this.userRepository.findOneBy({ mobile });
+      if (!user)
+        throw new NotFoundException(`User with mobile:${mobile} not found`);
+      return user;
+    } catch (error) {
+      throw new BadRequestException('Error Getting User', { cause: error });
+    }
+  }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
     try {
       const user = await this.findOne(id);
       if (!user) throw new NotFoundException('User not found');
-      await this.userRepository.update(id, updateUserDto);
+      const { display_name, role } = updateUserDto;
+      await this.userRepository.update(id, { display_name, role });
       return await this.findOne(id);
     } catch (error) {
       throw new BadRequestException('Error Updating User', { cause: error });

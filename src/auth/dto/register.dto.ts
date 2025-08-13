@@ -1,16 +1,14 @@
 import { Transform } from 'class-transformer';
 import {
-  IsEnum,
   IsNotEmpty,
-  IsOptional,
   IsString,
   Length,
   Matches,
   MaxLength,
   MinLength,
 } from 'class-validator';
-import UserRoleEnum from '../enums/userRoleEnum';
-export class CreateUserDto {
+
+export class RegisterDto {
   @IsString({ message: 'phone number must be string' })
   @Length(11, 11, { message: 'phone number must be 11 characters' })
   @IsNotEmpty({ message: 'phone cant  be empty' })
@@ -25,12 +23,7 @@ export class CreateUserDto {
   display_name: string;
 
   @IsString({ message: 'password should be string' })
-  @IsOptional()
   @MinLength(8, { message: 'Password should be at least 8 characters' })
   @MaxLength(16, { message: 'Password should be at most 16 characters' })
   password: string;
-
-  @IsEnum(UserRoleEnum, { message: 'user role should be (admin,user)' })
-  @IsOptional()
-  role: UserRoleEnum;
 }
