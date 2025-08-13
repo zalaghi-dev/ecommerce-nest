@@ -4,7 +4,9 @@ import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 @Module({
   imports: [
+    // Config
     ConfigModule.forRoot({ isGlobal: true }),
+    //DB
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOST,
@@ -15,6 +17,7 @@ import { UsersModule } from './users/users.module';
       entities: [__dirname + '/**/entities/*.entity{.ts,.js}'],
       synchronize: true,
     }),
+    // MODULE
     UsersModule,
   ],
 })
