@@ -4,11 +4,10 @@ import {
   IsString,
   Length,
   Matches,
-  MaxLength,
   MinLength,
 } from 'class-validator';
 
-export class RegisterDto {
+export class LoginDto {
   @IsString({ message: 'phone number must be string' })
   @Length(11, 11, { message: 'phone number must be 11 characters' })
   @IsNotEmpty({ message: 'phone cant  be empty' })

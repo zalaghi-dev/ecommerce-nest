@@ -17,14 +17,11 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
   async create(createUserDto: CreateUserDto) {
-    try {
+    const alreadyUser = await this.findOneByMobile(createUserDto.mobile, true);
+    if (!alreadyUser) {
       const newUser = this.userRepository.create(createUserDto);
       return await this.userRepository.save(newUser);
-    } catch (error) {
-      throw new BadRequestException('Error Creating New User', {
-        cause: error,
-      });
-    }
+    } else throw new BadRequestException('User with this phone already exists');
   }
 
   async findAll(role?: UserRoleEnum, limit: number = 10, page: number = 10) {
@@ -50,11 +47,12 @@ export class UsersService {
       throw new BadRequestException('Error Getting User', { cause: error });
     }
   }
-  async findOneByMobile(mobile: string) {
+  async findOneByMobile(mobile: string, checkExist: boolean = false) {
     try {
       const user = await this.userRepository.findOneBy({ mobile });
-      if (!user)
-        throw new NotFoundException(`User with mobile:${mobile} not found`);
+      if (!checkExist)
+        if (!user)
+          throw new NotFoundException(`User with mobile:${mobile} not found`);
       return user;
     } catch (error) {
       throw new BadRequestException('Error Getting User', { cause: error });

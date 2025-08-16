@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-// import { JwtService } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import UserRoleEnum from 'src/users/enums/userRoleEnum';
 import { UsersService } from 'src/users/users.service';
@@ -7,7 +7,7 @@ import { UsersService } from 'src/users/users.service';
 export class AuthService {
   constructor(
     private readonly userService: UsersService,
-    // private readonly jwtService: JwtService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async register(mobile: string, password: string, display_name: string) {
@@ -21,12 +21,14 @@ export class AuthService {
   }
   async login(mobile: string, password: string) {
     const user = await this.userService.findOneByMobile(mobile);
-    if (!(await bcrypt.compare(password, user.password)))
+    if (!user || !(await bcrypt.compare(password, user.password)))
       throw new UnauthorizedException('Incorrect Password');
     const payload = {
       mobile: user.mobile,
       sub: user.id,
       display_name: user.display_name,
     };
+    const token = this.jwtService.sign(payload);
+    return { accessToken: token };
   }
 }
