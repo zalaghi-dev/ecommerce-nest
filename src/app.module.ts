@@ -11,7 +11,7 @@ import { TicketsModule } from './tickets/tickets.module';
     ConfigModule.forRoot({ isGlobal: true }),
     //DB
     TypeOrmModule.forRoot({
-      type: 'mysql',
+      type: 'postgres',
       host: process.env.DB_HOST,
       port: +process.env.DB_PORT!,
       username: process.env.DB_USER,
