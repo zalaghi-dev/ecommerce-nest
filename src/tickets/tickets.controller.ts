@@ -29,22 +29,22 @@ export class TicketsController {
   }
 
   @Get()
-  findAll() {
-    return this.ticketsService.findAll();
+  async findAll(@Res() res: Response) {
+    const tickets = await this.ticketsService.findAll();
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      data: tickets,
+      message: 'Tickets found',
+    });
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.ticketsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTicketDto: UpdateTicketDto) {
-    return this.ticketsService.update(+id, updateTicketDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.ticketsService.remove(+id);
+  async findOne(@Res() res: Response, @Param('id') id: string) {
+    const ticket = await this.ticketsService.findOne(+id);
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      data: ticket,
+      message: 'Ticket found',
+    });
   }
 }

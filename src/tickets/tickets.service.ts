@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,30 +18,38 @@ export class TicketsService {
   async create(createTicketDto: CreateTicketDto) {
     const { userId, replyTo, ...ticketData } = createTicketDto;
     const user = await this.userService.findOne(userId);
-    const replyToTicket = await this.ticketRepository.findOneByOrFail({
-      id: +replyTo,
-    });
+    let replyToTicket: Ticket | null = null;
+    if (replyTo) {
+      replyToTicket = await this.ticketRepository.findOneOrFail({
+        where: {
+          id: +replyTo,
+        },
+        relations: ['replyTo'],
+      });
+      if (replyToTicket.replyTo)
+        throw new BadRequestException("You can't reply on this ticket");
+    }
     const ticket = this.ticketRepository.create({
       user,
       ...ticketData,
-      replyTo: replyToTicket,
+      replyTo: replyToTicket ?? null,
     });
     return await this.ticketRepository.save(ticket);
   }
 
-  findAll() {
-    return `This action returns all tickets`;
+  async findAll() {
+    const tickets = await this.ticketRepository
+      .createQueryBuilder('tickets')
+      .where('tickets.replyToId IS NULL')
+      .getMany();
+    return tickets;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} ticket`;
-  }
-
-  update(id: number, updateTicketDto: UpdateTicketDto) {
-    return `This action updates a #${id} ticket`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} ticket`;
+  async findOne(id: number) {
+    const ticket = await this.ticketRepository.findOneOrFail({
+      where: { id },
+      relations: ['replies', 'replyTo'],
+    });
+    return ticket;
   }
 }
