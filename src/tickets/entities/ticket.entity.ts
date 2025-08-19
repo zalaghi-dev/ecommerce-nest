@@ -1,6 +1,7 @@
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -29,4 +30,7 @@ export class Ticket {
 
   @OneToMany(() => Ticket, (ticket) => ticket.replyTo)
   replies: Ticket[];
+
+  @CreateDateColumn()
+  created_at: Date;
 }
