@@ -18,8 +18,8 @@ export class TicketsController {
   @Post()
   async create(@Body() createTicketDto: CreateTicketDto, @Res() res: Response) {
     const newTicket = await this.ticketsService.create(createTicketDto);
-    return res.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
+    return res.status(HttpStatus.CREATED).json({
+      statusCode: HttpStatus.CREATED,
       data: newTicket,
       message: 'Ticket created',
     });

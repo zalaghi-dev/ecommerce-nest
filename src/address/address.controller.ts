@@ -25,7 +25,7 @@ export class AddressController {
   ) {
     const address = await this.addressService.create(createAddressDto);
     return res.status(HttpStatus.CREATED).json({
-      statusCode: HttpStatus.OK,
+      statusCode: HttpStatus.CREATED,
       data: address,
       message: 'Address Created',
     });
