@@ -48,12 +48,20 @@ export class ProductsController {
       message: 'Product found',
     });
   }
-  // TODO
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-  //   return this.productsService.update(+id, updateProductDto);
-  // }
+  @Patch(':id')
+  async update(
+    @Res() res: Response,
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+  ) {
+    const product = await this.productsService.update(+id, updateProductDto);
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      data: product,
+      message: 'Product has updated',
+    });
+  }
 
   // @Delete(':id')
   // remove(@Param('id') id: string) {

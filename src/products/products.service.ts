@@ -42,11 +42,23 @@ export class ProductsService {
     return product;
   }
 
-  // TODO
+  async update(id: number, updateProductDto: UpdateProductDto) {
+    const { title, description, price, stock, categoryIds } = updateProductDto;
+    const product = await this.findOne(id);
+    if (!product) throw new NotFoundException('Product not found');
+    if (title) product.title = title;
+    if (description) product.description = description;
+    if (price) product.price = price;
+    if (stock) product.stock = stock;
+    if (categoryIds) {
+      const categories = await this.categoryRepository.findBy({
+        id: In([categoryIds]),
+      });
+      product.categories = categories;
+    }
 
-  // update(id: number, updateProductDto: UpdateProductDto) {
-  //   return `This action updates a #${id} product`;
-  // }
+    return await this.productsRepository.save(product);
+  }
 
   // remove(id: number) {
   //   return `This action removes a #${id} product`;
