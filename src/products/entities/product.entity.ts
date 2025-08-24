@@ -20,6 +20,12 @@ export class Product {
   @Column({ nullable: false })
   stock: number;
 
+  @Column({ nullable: true })
+  description: string;
+
+  @Column({ type: 'decimal', nullable: false })
+  price: number;
+
   @CreateDateColumn()
   created_at: Date;
 

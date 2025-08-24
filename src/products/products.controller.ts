@@ -1,34 +1,62 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpStatus,
+  Res,
+} from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { Response } from 'express';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productsService.create(createProductDto);
+  create(@Res() res: Response, @Body() createProductDto: CreateProductDto) {
+    const product = this.productsService.create(createProductDto);
+    return res.status(HttpStatus.CREATED).json({
+      statusCode: HttpStatus.CREATED,
+      data: product,
+      message: 'Product created',
+    });
   }
 
   @Get()
-  findAll() {
-    return this.productsService.findAll();
+  findAll(@Res() res: Response) {
+    const products = this.productsService.findAll();
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      data: products,
+      message: 'Products found',
+    });
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productsService.findOne(+id);
-  }
+  async findOne(@Res() res: Response, @Param('id') id: string) {
+    const product = await this.productsService.findOne(+id);
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productsService.update(+id, updateProductDto);
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      data: product,
+      message: 'Product found',
+    });
   }
+  // TODO
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productsService.remove(+id);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+  //   return this.productsService.update(+id, updateProductDto);
+  // }
+
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.productsService.remove(+id);
+  // }
 }
