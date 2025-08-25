@@ -47,4 +47,13 @@ export class CategoriesController {
       message: 'Remove Only Categories Success!',
     });
   }
+  @Delete('safe-remove/:id')
+  async safeRemove(@Res() res: Response, @Param('id') id: string) {
+    await this.categoriesService.removeSafe(+id);
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      data: null,
+      message: 'Remove Category without product success!',
+    });
+  }
 }

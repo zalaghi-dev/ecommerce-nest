@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
@@ -18,6 +22,7 @@ export class CategoriesService {
   async findAll() {
     return await this.categoryRepository.find({ relations: ['products'] });
   }
+
   async findOne(id: number) {
     const category = await this.categoryRepository.findOne({
       where: { id },
@@ -30,6 +35,15 @@ export class CategoriesService {
     //! REMOVE RELATIONS FROM PRODUCT
     const category = await this.findOne(id);
     category.products = [];
+    await this.categoryRepository.save(category);
+    // THEN REMOVE
+    return await this.categoryRepository.remove(category);
+  }
+  async removeSafe(id: number) {
+    //! REMOVE ONLY CATEGORIES WITHOUT RELATION IS ALLOWED
+    const category = await this.findOne(id);
+    if (category.products.length > 0)
+      throw new BadRequestException('This Category has some products');
     await this.categoryRepository.save(category);
     // THEN REMOVE
     return await this.categoryRepository.remove(category);
