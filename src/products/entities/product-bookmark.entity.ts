@@ -2,7 +2,7 @@ import { User } from 'src/users/entities/user.entity';
 import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Product } from './product.entity';
 
-@Entity('products')
+@Entity('bookmark-product')
 export class BookmarkProduct {
   @PrimaryGeneratedColumn()
   id: number;
