@@ -12,14 +12,18 @@ import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Response } from 'express';
+import { BookmarkProductDto } from './dto/bookmark-product.dto';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  create(@Res() res: Response, @Body() createProductDto: CreateProductDto) {
-    const product = this.productsService.create(createProductDto);
+  async create(
+    @Res() res: Response,
+    @Body() createProductDto: CreateProductDto,
+  ) {
+    const product = await this.productsService.create(createProductDto);
     return res.status(HttpStatus.CREATED).json({
       statusCode: HttpStatus.CREATED,
       data: product,
@@ -27,9 +31,23 @@ export class ProductsController {
     });
   }
 
+  @Post('bookmark-product')
+  async bookmarkProduct(
+    @Res() res: Response,
+    @Body() bookmarkProductDto: BookmarkProductDto,
+  ) {
+    const bookmarkProduct =
+      await this.productsService.toggleBookmark(bookmarkProductDto);
+    return res.status(HttpStatus.CREATED).json({
+      statusCode: HttpStatus.CREATED,
+      data: bookmarkProduct,
+      message: 'Product created',
+    });
+  }
+
   @Get()
-  findAll(@Res() res: Response) {
-    const products = this.productsService.findAll();
+  async findAll(@Res() res: Response) {
+    const products = await this.productsService.findAll();
     return res.status(HttpStatus.OK).json({
       statusCode: HttpStatus.OK,
       data: products,
