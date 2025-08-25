@@ -56,4 +56,13 @@ export class CategoriesController {
       message: 'Remove Category without product success!',
     });
   }
+  @Delete('hard-remove/:id')
+  async hardRemove(@Res() res: Response, @Param('id') id: string) {
+    await this.categoriesService.removeHard(+id);
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      data: null,
+      message: "Remove Category with it's products success!",
+    });
+  }
 }
