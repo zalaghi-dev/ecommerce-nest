@@ -10,6 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { BookmarkProduct } from './product-bookmark.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Entity('products')
 export class Product {
@@ -33,6 +34,9 @@ export class Product {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @ManyToMany(() => User, (user) => user.basket_items)
+  baskets: User[];
 
   @OneToMany(() => BookmarkProduct, (bookmark) => bookmark.product)
   bookmarks: BookmarkProduct[];
