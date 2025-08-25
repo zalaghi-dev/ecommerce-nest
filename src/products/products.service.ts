@@ -60,7 +60,7 @@ export class ProductsService {
     return await this.productsRepository.save(product);
   }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} product`;
-  // }
+  remove(id: number) {
+    return `This action removes a #${id} product`;
+  }
 }

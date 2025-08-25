@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   HttpStatus,
   Res,
 } from '@nestjs/common';
@@ -62,9 +61,4 @@ export class ProductsController {
       message: 'Product has updated',
     });
   }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.productsService.remove(+id);
-  // }
 }

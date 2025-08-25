@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Res, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Res,
+  HttpStatus,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { Response } from 'express';
@@ -27,6 +36,15 @@ export class CategoriesController {
       statusCode: HttpStatus.OK,
       data: categories,
       message: 'Categories found',
+    });
+  }
+  @Delete('remove-only-category/:id')
+  async remove(@Res() res: Response, @Param('id') id: string) {
+    await this.categoriesService.removeOnlyCategories(+id);
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      data: null,
+      message: 'Remove Only Categories Success!',
     });
   }
 }
