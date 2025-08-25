@@ -92,8 +92,8 @@ export class ProductsService {
     // Check if it is bookmarked or not
     const existing = await this.bookmarkProductRepository.findOne({
       where: {
-        product,
-        user,
+        product: { id: product.id },
+        user: { id: user.id },
       },
     });
 
