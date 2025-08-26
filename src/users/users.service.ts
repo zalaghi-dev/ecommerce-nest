@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import UserRoleEnum from './enums/userRoleEnum';
+import { Product } from 'src/products/entities/product.entity';
 
 @Injectable()
 export class UsersService {
@@ -78,5 +79,29 @@ export class UsersService {
     } catch (error) {
       throw new BadRequestException('Error Removing User', { cause: error });
     }
+  }
+  async addProductToBasket(userId: number, product: Product) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['basket_items'],
+    });
+    if (!user) throw new NotFoundException('User not found');
+    user.basket_items.push(product);
+    return this.userRepository.save(user);
+  }
+  async removeProductFromBasket(userId: number, product: Product) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['basket_items'],
+    });
+    if (!user) throw new NotFoundException('User not found');
+    const productIndex = user.basket_items.findIndex(
+      (item) => item.id === product.id,
+    );
+    if (productIndex === -1)
+      throw new NotFoundException('Product not found in basket');
+    user.basket_items.splice(productIndex, -1);
+
+    return this.userRepository.save(user);
   }
 }

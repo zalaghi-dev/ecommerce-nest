@@ -13,6 +13,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Response } from 'express';
 import { BookmarkProductDto } from './dto/bookmark-product.dto';
+import { BasketProductDto } from './dto/basket-product.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -38,10 +39,37 @@ export class ProductsController {
   ) {
     const bookmarkProduct =
       await this.productsService.toggleBookmark(bookmarkProductDto);
-    return res.status(HttpStatus.CREATED).json({
-      statusCode: HttpStatus.CREATED,
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
       data: bookmarkProduct,
-      message: 'Product created',
+      message: 'Product toggled bookmark',
+    });
+  }
+
+  @Post('add-basket')
+  async addItemToBasket(
+    @Res() res: Response,
+    @Body() basketProductDto: BasketProductDto,
+  ) {
+    const basketProduct =
+      await this.productsService.addItemToBasket(basketProductDto);
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      data: basketProduct,
+      message: 'Product added to basket',
+    });
+  }
+  @Post('remove-basket')
+  async removeItemFromBasket(
+    @Res() res: Response,
+    @Body() basketProductDto: BasketProductDto,
+  ) {
+    const basketProduct =
+      await this.productsService.removeItemFromBasket(basketProductDto);
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      data: basketProduct,
+      message: 'Product removed from basket',
     });
   }
 

@@ -8,6 +8,7 @@ import { Category } from 'src/categories/entities/category.entity';
 import { BookmarkProduct } from './entities/product-bookmark.entity';
 import { BookmarkProductDto } from './dto/bookmark-product.dto';
 import { UsersService } from 'src/users/users.service';
+import { BasketProductDto } from './dto/basket-product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -110,5 +111,39 @@ export class ProductsService {
         await this.bookmarkProductRepository.save(bookmark);
       return bookmarkProduct;
     }
+  }
+  async addItemToBasket(basketProductDto: BasketProductDto) {
+    const { product_id, user_id } = basketProductDto;
+
+    // Check if product exist
+    const product = await this.productsRepository.findOne({
+      where: { id: product_id },
+    });
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+    // Check if user exist
+    const user = await this.userService.findOne(user_id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return await this.userService.addProductToBasket(user_id, product);
+  }
+  async removeItemFromBasket(basketProductDto: BasketProductDto) {
+    const { product_id, user_id } = basketProductDto;
+
+    // Check if product exist
+    const product = await this.productsRepository.findOne({
+      where: { id: product_id },
+    });
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+    // Check if user exist
+    const user = await this.userService.findOne(user_id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return await this.userService.removeProductFromBasket(user_id, product);
   }
 }
