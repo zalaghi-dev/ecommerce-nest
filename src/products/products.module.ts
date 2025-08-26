@@ -14,5 +14,6 @@ import { BookmarkProduct } from './entities/product-bookmark.entity';
   ],
   controllers: [ProductsController],
   providers: [ProductsService],
+  exports: [ProductsService],
 })
 export class ProductsModule {}
