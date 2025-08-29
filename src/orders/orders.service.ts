@@ -24,15 +24,8 @@ export class OrdersService {
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {
-    const {
-      userId,
-      addressId,
-      items,
-      total_price,
-      discount_code,
-      status,
-      payed_time,
-    } = createOrderDto;
+    const { userId, addressId, items, discount_code, status, payed_time } =
+      createOrderDto;
 
     const user = await this.userService.findOne(userId);
     if (!user) throw new NotFoundException('User not found');
@@ -43,7 +36,6 @@ export class OrdersService {
     const order = this.orderRepo.create({
       user,
       address,
-      total_price,
       discount_code,
       status,
       payed_time,
@@ -53,6 +45,7 @@ export class OrdersService {
 
     // ساخت آیتم‌های سفارش
     const orderItems: OrderItem[] = [];
+    let totalPrice = 0;
     for (const itemDto of items) {
       const product = await this.productService.findOne(itemDto.productId);
       if (!product) {
@@ -60,7 +53,7 @@ export class OrdersService {
           `Product with id ${itemDto.productId} not found`,
         );
       }
-
+      totalPrice += product.price;
       const orderItem = this.orderItemRepo.create({
         order: savedOrder,
         product,
@@ -71,7 +64,10 @@ export class OrdersService {
     }
 
     await this.orderItemRepo.save(orderItems);
-
+    await this.orderRepo.update(
+      { id: savedOrder.id },
+      { total_price: totalPrice },
+    );
     //return item
     return this.orderRepo.findOne({
       where: { id: savedOrder.id },
@@ -106,15 +102,8 @@ export class OrdersService {
     });
     if (!order) throw new NotFoundException('Order not found');
 
-    const {
-      userId,
-      addressId,
-      items,
-      total_price,
-      discount_code,
-      status,
-      payed_time,
-    } = updateOrderDto;
+    const { userId, addressId, items, discount_code, status, payed_time } =
+      updateOrderDto;
 
     if (userId) {
       const user = await this.userService.findOne(userId);
@@ -126,10 +115,6 @@ export class OrdersService {
       const address = await this.addressService.findOne(addressId);
       if (!address) throw new NotFoundException('Address not found');
       order.address = address;
-    }
-
-    if (typeof total_price !== 'undefined') {
-      order.total_price = total_price;
     }
 
     if (typeof discount_code !== 'undefined') {

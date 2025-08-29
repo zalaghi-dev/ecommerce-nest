@@ -29,10 +29,6 @@ export class CreateOrderDto {
   @IsNumber()
   addressId: number;
 
-  @IsNotEmpty()
-  @IsNumber()
-  total_price: number;
-
   @IsOptional()
   @IsString()
   discount_code?: string;

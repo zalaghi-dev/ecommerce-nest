@@ -29,10 +29,6 @@ export class UpdateOrderDto {
   addressId?: number;
 
   @IsOptional()
-  @IsNumber()
-  total_price?: number;
-
-  @IsOptional()
   @IsString()
   discount_code?: string;
 
