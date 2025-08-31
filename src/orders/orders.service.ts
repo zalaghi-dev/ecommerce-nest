@@ -8,6 +8,8 @@ import { UsersService } from 'src/users/users.service';
 import { AddressService } from 'src/address/address.service';
 import { ProductsService } from 'src/products/products.service';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { HttpService } from '@nestjs/axios';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class OrdersService {
@@ -21,6 +23,7 @@ export class OrdersService {
     private readonly userService: UsersService,
     private readonly addressService: AddressService,
     private readonly productService: ProductsService,
+    private readonly httpService: HttpService,
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {
@@ -157,5 +160,21 @@ export class OrdersService {
       where: { id: order.id },
       relations: ['items', 'items.product', 'user', 'address'],
     });
+  }
+  async startPayment(amount: number) {
+    const res$ = this.httpService.post('https://gateway.zibal.ir/v1/request', {
+      merchant: 'zibal',
+      amount: amount * 10 /* Toman to Rial */,
+    });
+    const res = await lastValueFrom(res$);
+    return res.data;
+  }
+  async verifyPayment(trackId: number) {
+    const res$ = this.httpService.post('https://gateway.zibal.ir/v1/verify', {
+      merchant: 'zibal',
+      trackId,
+    });
+    const res = await lastValueFrom(res$);
+    return res.data;
   }
 }

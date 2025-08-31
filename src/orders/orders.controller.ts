@@ -13,6 +13,8 @@ import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Response } from 'express';
+import { PaymentOrderDto } from './dto/payment-order.dto';
+import { VerifyPaymentDto } from './dto/verify-payment.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -69,6 +71,37 @@ export class OrdersController {
       statusCode: HttpStatus.OK,
       data: null,
       message: 'Order deleted',
+    });
+  }
+  @Post('/start-payment')
+  async startPayment(
+    @Body() paymentOrderDto: PaymentOrderDto,
+    @Res() res: Response,
+  ) {
+    const responsePay = await this.ordersService.startPayment(
+      paymentOrderDto.amount,
+    );
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      data: {
+        ...responsePay,
+        payment_url: `https://gateway.zibal.ir/start/${responsePay.trackId}`,
+      },
+      message: 'Payment received',
+    });
+  }
+  @Post('/verify-payment')
+  async verifyPayment(
+    @Body() verifyPaymentDto: VerifyPaymentDto,
+    @Res() res: Response,
+  ) {
+    const responseVerify = await this.ordersService.verifyPayment(
+      verifyPaymentDto.trackId,
+    );
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      data: responseVerify,
+      message: 'Verift received',
     });
   }
 }
