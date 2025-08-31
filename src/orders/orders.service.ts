@@ -10,6 +10,7 @@ import { ProductsService } from 'src/products/products.service';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
+import { OrderStatus } from './enums/order-status.enum';
 
 @Injectable()
 export class OrdersService {
@@ -161,20 +162,31 @@ export class OrdersService {
       relations: ['items', 'items.product', 'user', 'address'],
     });
   }
-  async startPayment(amount: number) {
+  async startPayment(order_id: number) {
+    const order = await this.findOne(order_id);
+    if (!order) throw new NotFoundException('Order not found');
+
     const res$ = this.httpService.post('https://gateway.zibal.ir/v1/request', {
       merchant: 'zibal',
-      amount: amount * 10 /* Toman to Rial */,
+      callbackUrl: 'http://localhost:3333',
+      orderId: 2,
+      amount: order.total_price * 10 /* Toman to Rial */,
     });
     const res = await lastValueFrom(res$);
     return res.data;
   }
-  async verifyPayment(trackId: number) {
+  async verifyPayment(track_id: number, order_id: number) {
     const res$ = this.httpService.post('https://gateway.zibal.ir/v1/verify', {
       merchant: 'zibal',
-      trackId,
+      track_id,
     });
     const res = await lastValueFrom(res$);
+    if (res.data.result === 100) {
+      const order = await this.findOne(order_id);
+      if (!order) throw new NotFoundException('Order not found');
+      order.status = OrderStatus.COMPLETED;
+      await this.orderRepo.save(order);
+    }
     return res.data;
   }
 }
