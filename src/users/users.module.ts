@@ -11,13 +11,4 @@ import { LoggerMiddleware } from 'src/middlewares/logger/logger.middleware';
   providers: [UsersService],
   exports: [UsersService],
 })
-export class UsersModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware)
-      .forRoutes(
-        { method: RequestMethod.POST, path: 'users' },
-        { method: RequestMethod.GET, path: 'users/:id' },
-      );
-  }
-}
+export class UsersModule {}
