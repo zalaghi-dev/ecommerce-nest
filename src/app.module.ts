@@ -8,8 +8,8 @@ import { TicketsModule } from './tickets/tickets.module';
 import { ProductsModule } from './products/products.module';
 import { CategoriesModule } from './categories/categories.module';
 import { OrdersModule } from './orders/orders.module';
-import { LoggerMiddleware } from './middlewares/logger/logger.middleware';
-import { BodyLoggerMiddleware } from './middlewares/body.logger/body.logger.middleware';
+import { IpTrackerModule } from './ip-tracker/ip-tracker.module';
+import { IpTrackerMiddleware } from './ip-tracker/ip-tracker.middleware';
 @Module({
   imports: [
     // Config
@@ -33,10 +33,11 @@ import { BodyLoggerMiddleware } from './middlewares/body.logger/body.logger.midd
     ProductsModule,
     CategoriesModule,
     OrdersModule,
+    IpTrackerModule,
   ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(BodyLoggerMiddleware, LoggerMiddleware).forRoutes('*');
+    consumer.apply(IpTrackerMiddleware).forRoutes('*');
   }
 }
