@@ -3,6 +3,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -19,6 +21,11 @@ export class UsersService {
   ) {}
   async create(createUserDto: CreateUserDto) {
     const alreadyUser = await this.findOneByMobile(createUserDto.mobile, true);
+    const hashedPassword: string = await bcrypt.hash(
+      createUserDto.password,
+      12,
+    );
+    createUserDto.password = hashedPassword;
     if (!alreadyUser) {
       const newUser = this.userRepository.create(createUserDto);
       return await this.userRepository.save(newUser);
