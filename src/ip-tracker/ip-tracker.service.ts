@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IpRecord } from './entities/ip-record.entity';
 import { Repository } from 'typeorm';
@@ -22,25 +22,36 @@ export class IpTrackerService {
       const newRecord = this.ipRepo.create({
         ip,
         requestCount: 1,
-        windowStart: nowTime,
+        windowStart: nowTimeTh,
         isBlocked: false,
         blockUntil: null,
       });
       await this.ipRepo.save(newRecord);
-      console.log(`IP: ${ip} send request on time: ${nowTime.toISOString()}`);
+      console.log(`IP: ${ip} send request on time: ${nowTimeTh.toISOString()}`);
       return;
     } else {
+      // Check if user is blocked
+      if (
+        record.isBlocked &&
+        record.blockUntil &&
+        nowTimeTh < record.blockUntil
+      ) {
+        throw new HttpException(
+          `You are blocked for ${this.BLOCK_MINUTES}`,
+          HttpStatus.TOO_MANY_REQUESTS,
+        );
+      }
       // Calc win end
       const windowEnd = new Date(
-        record.windowStart.getTime() +
-          this.WINDOW_MINUTES * 60 * 1000 +
-          this.TEHRAN_TIMEZONE,
+        record.windowStart.getTime() + this.WINDOW_MINUTES * 60 * 1000,
       );
 
       // Refresh rec
       if (nowTimeTh > windowEnd) {
         record.requestCount = 1;
-        record.windowStart = nowTime;
+        record.windowStart = nowTimeTh;
+        record.isBlocked = false;
+        record.blockUntil = null;
       } else {
         if (record.requestCount >= this.MAX_REQUEST) {
           // BLOCK
@@ -55,6 +66,11 @@ export class IpTrackerService {
         }
       }
       await this.ipRepo.save(record);
+      if (record.isBlocked)
+        throw new HttpException(
+          `You are blocked for ${this.BLOCK_MINUTES}`,
+          HttpStatus.TOO_MANY_REQUESTS,
+        );
     }
   }
 }
