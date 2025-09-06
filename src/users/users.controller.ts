@@ -15,12 +15,13 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Response } from 'express';
 import UserRoleEnum from './enums/userRoleEnum';
-
+import { ApiExcludeEndpoint, ApiOperation, ApiTags } from '@nestjs/swagger';
+@ApiTags('Users Managment')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
   @Post()
+  @ApiOperation({ summary: 'creating new user' })
   async create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
     const createdUser = await this.usersService.create(createUserDto);
     return res.status(HttpStatus.CREATED).json({
@@ -68,7 +69,7 @@ export class UsersController {
       message: 'User updated!',
     });
   }
-
+  @ApiExcludeEndpoint()
   @Delete(':id')
   async remove(@Res() res: Response, @Param('id') id: string) {
     await this.usersService.remove(+id);

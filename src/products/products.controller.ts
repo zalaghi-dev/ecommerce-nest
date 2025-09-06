@@ -14,7 +14,8 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { Response } from 'express';
 import { BookmarkProductDto } from './dto/bookmark-product.dto';
 import { BasketProductDto } from './dto/basket-product.dto';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Products Managment')
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
