@@ -15,8 +15,14 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Response } from 'express';
 import UserRoleEnum from './enums/userRoleEnum';
-import { ApiExcludeEndpoint, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 @ApiTags('Users Managment')
+@ApiBearerAuth()
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -45,7 +51,6 @@ export class UsersController {
       message: 'Users Found',
     });
   }
-
   @Get(':id')
   async findOne(@Res() res: Response, @Param('id') id: string) {
     const user = await this.usersService.findOne(+id);
