@@ -3,8 +3,9 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { Response } from 'express';
-import { ApiExcludeController } from '@nestjs/swagger';
-@ApiExcludeController()
+import { Public } from './decorators/public.decorator';
+
+@Public()
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
