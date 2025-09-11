@@ -17,7 +17,7 @@ export class Role {
   })
   name: string; // admin - support - accounting - warehouse
 
-  @ManyToMany(() => Permission, { eager: true })
+  @ManyToMany(() => Permission)
   @JoinTable({ name: 'role_permissions' })
   permissions: Permission[];
 }

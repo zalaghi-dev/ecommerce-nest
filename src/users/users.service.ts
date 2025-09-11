@@ -55,6 +55,19 @@ export class UsersService {
       throw new BadRequestException('Error Getting User', { cause: error });
     }
   }
+  async findUserByPermission(user_id: number) {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { id: user_id },
+        relations: ['roles', 'roles.permissions', 'permissions'],
+      });
+      if (!user)
+        throw new NotFoundException(`User with id:${user_id} not found`);
+      return user;
+    } catch (error) {
+      throw new BadRequestException('Error Getting User', { cause: error });
+    }
+  }
   async findOneByMobile(mobile: string, checkExist: boolean = false) {
     try {
       const user = await this.userRepository.findOneBy({ mobile });

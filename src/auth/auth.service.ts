@@ -19,6 +19,7 @@ export class AuthService {
       role: Role.NormalUser,
     });
   }
+
   async login(mobile: string, password: string) {
     const user = await this.userService.findOneByMobile(mobile);
     if (!user || !(await bcrypt.compare(password, user.password)))
@@ -31,5 +32,14 @@ export class AuthService {
     };
     const token = this.jwtService.sign(payload);
     return { accessToken: token };
+  }
+  async getUserPermissions(user_id: number) {
+    const user = await this.userService.findUserByPermission(user_id);
+    const permissions = new Set<string>();
+    user.roles?.forEach((role) =>
+      role.permissions?.forEach((p) => permissions.add(p.name)),
+    );
+    user?.permissions?.forEach((p) => permissions.add(p.name));
+    return Array.from(permissions);
   }
 }
