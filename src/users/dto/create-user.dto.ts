@@ -9,7 +9,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import UserRoleEnum from '../enums/userRoleEnum';
+import Role from '../enums/Role';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 export class CreateUserDto {
   @ApiProperty({ example: '09120000000', description: 'Phone Number' })
@@ -41,10 +41,10 @@ export class CreateUserDto {
   password: string;
 
   @ApiPropertyOptional({
-    example: UserRoleEnum.Admin,
-    enum: UserRoleEnum,
+    example: Role.Admin,
+    enum: Role,
   })
-  @IsEnum(UserRoleEnum, { message: 'user role should be (admin,user)' })
+  @IsEnum(Role, { message: 'user role should be (admin,user)' })
   @IsOptional()
-  role: UserRoleEnum;
+  role: Role;
 }

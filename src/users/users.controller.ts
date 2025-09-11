@@ -14,18 +14,21 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Response } from 'express';
-import UserRoleEnum from './enums/userRoleEnum';
+import Role from './enums/Role';
 import {
   ApiBearerAuth,
   ApiExcludeEndpoint,
   ApiOperation,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 @ApiTags('Users Managment')
 @ApiBearerAuth()
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+  @Roles(Role.Moderator, Role.Admin)
   @Post()
   @ApiOperation({ summary: 'creating new user' })
   async create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
@@ -36,11 +39,13 @@ export class UsersController {
       message: 'User create success',
     });
   }
-
+  @ApiQuery({ name: 'role', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  @ApiQuery({ name: 'page', required: false })
   @Get()
   async findAll(
     @Res() res: Response,
-    @Query('role') role?: UserRoleEnum,
+    @Query('role') role?: Role,
     @Query('limit') limit: number = 10,
     @Query('page') page: number = 1,
   ) {
@@ -60,7 +65,7 @@ export class UsersController {
       message: 'User Found',
     });
   }
-
+  @Roles(Role.Moderator, Role.Admin)
   @Patch(':id')
   async update(
     @Res() res: Response,
@@ -74,6 +79,7 @@ export class UsersController {
       message: 'User updated!',
     });
   }
+  @Roles(Role.Moderator, Role.Admin)
   @ApiExcludeEndpoint()
   @Delete(':id')
   async remove(@Res() res: Response, @Param('id') id: string) {

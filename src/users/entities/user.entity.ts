@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import UserRoleEnum from '../enums/userRoleEnum';
+import Role from '../enums/Role';
 import { Address } from 'src/address/entities/address.entity';
 import { Ticket } from 'src/tickets/entities/ticket.entity';
 import { BookmarkProduct } from 'src/products/entities/product-bookmark.entity';
@@ -34,10 +34,10 @@ export class User {
 
   @Column({
     type: 'enum',
-    enum: UserRoleEnum,
-    default: UserRoleEnum.NormalUser,
+    enum: Role,
+    default: Role.NormalUser,
   })
-  role: UserRoleEnum;
+  role: Role;
 
   @OneToMany(() => Address, (address) => address.user)
   addresses: Address;

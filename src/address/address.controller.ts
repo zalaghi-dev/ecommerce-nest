@@ -14,7 +14,10 @@ import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
 import { Response } from 'express';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import Role from 'src/users/enums/Role';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 @ApiBearerAuth()
+@Roles(Role.NormalUser)
 @Controller('address')
 export class AddressController {
   constructor(private readonly addressService: AddressService) {}
