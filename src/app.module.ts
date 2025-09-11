@@ -39,11 +39,11 @@ import { RolesGuard } from './auth/guards/roles.guard';
     IpTrackerModule,
   ],
   providers: [
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
     },
-    { provide: APP_GUARD, useClass: JwtAuthGuard },
   ],
 })
 export class AppModule {
