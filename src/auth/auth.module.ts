@@ -9,6 +9,8 @@ import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Role } from './entities/role.entity';
 import { Permission } from './entities/permission.entity';
+import { APP_GUARD } from '@nestjs/core';
+import { PermissionsGuard } from './guards/permissions.guard';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Role, Permission]),
@@ -27,7 +29,14 @@ import { Permission } from './entities/permission.entity';
     //
     UsersModule,
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: PermissionsGuard,
+    },
+  ],
   controllers: [AuthController],
 })
 export class AuthModule {}
