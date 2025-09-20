@@ -14,6 +14,7 @@ import { Response } from 'express';
 import { Public } from './decorators/public.decorator';
 import { RoleDto } from './dto/role.dto';
 import { RoleToUserDto } from './dto/role-to-user.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Public()
 @Controller('auth')
@@ -44,6 +45,7 @@ export class AuthController {
       message: 'Logged In Successfully',
     });
   }
+  @ApiBearerAuth()
   @Post('role')
   async newRole(@Body() createRole: RoleDto, @Res() res: Response) {
     const role = await this.authService.createRole(createRole.name);
@@ -53,6 +55,7 @@ export class AuthController {
       message: 'Role created successfully',
     });
   }
+  @ApiBearerAuth()
   @Post('role/append-to-user')
   async addRoleToUser(
     @Body() roleToUserDto: RoleToUserDto,
@@ -68,6 +71,7 @@ export class AuthController {
       message: 'Role added for user successfully',
     });
   }
+  @ApiBearerAuth()
   @Post('role/remove-from-user')
   async removeRoleFromUser(
     @Body() roleToUserDto: RoleToUserDto,
@@ -83,6 +87,18 @@ export class AuthController {
       message: 'Role removed from user successfully',
     });
   }
+  @ApiBearerAuth()
+  @Post('roles/get-user-roles/:user_id')
+  async getUserRoles(@Param('user_id') user_id: string, @Res() res: Response) {
+    const roles = await this.authService.getUserRoles(+user_id);
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      data: roles,
+      message: 'Roles found!',
+    });
+  }
+
+  @ApiBearerAuth()
   @Get('get-user-permissions/:user_id')
   async getUserPermission(@Param('user_id') user_id: string) {
     const permissions = await this.authService.getUserPermissions(+user_id);

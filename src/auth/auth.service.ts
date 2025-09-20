@@ -74,4 +74,9 @@ export class AuthService {
     }
     throw new BadRequestException('invalid data');
   }
+
+  async getUserRoles(userId: number) {
+    const user = await this.userService.findUserByPermission(userId);
+    return user.roles;
+  }
 }
