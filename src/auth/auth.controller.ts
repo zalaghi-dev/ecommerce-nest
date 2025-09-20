@@ -13,6 +13,7 @@ import { LoginDto } from './dto/login.dto';
 import { Response } from 'express';
 import { Public } from './decorators/public.decorator';
 import { RoleDto } from './dto/role.dto';
+import { RoleToUserDto } from './dto/role-to-user.dto';
 
 @Public()
 @Controller('auth')
@@ -50,6 +51,21 @@ export class AuthController {
       statusCode: HttpStatus.CREATED,
       data: role,
       message: 'Role created successfully',
+    });
+  }
+  @Post('role/append-to-user')
+  async addRoleToUser(
+    @Body() roleToUserDto: RoleToUserDto,
+    @Res() res: Response,
+  ) {
+    const userRole = await this.authService.addRoleToUser(
+      roleToUserDto.user_id,
+      roleToUserDto.role_id,
+    );
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      data: userRole,
+      message: 'Role added for user successfully',
     });
   }
   @Get('get-user-permissions/:user_id')

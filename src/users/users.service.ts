@@ -10,8 +10,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
-import Role from './enums/Role';
 import { Product } from 'src/products/entities/product.entity';
+import RoleEnum from './enums/Role';
+import { Role } from 'src/auth/entities/role.entity';
 
 @Injectable()
 export class UsersService {
@@ -32,7 +33,7 @@ export class UsersService {
     } else throw new BadRequestException('User with this phone already exists');
   }
 
-  async findAll(role?: Role, limit: number = 10, page: number = 10) {
+  async findAll(role?: RoleEnum, limit: number = 10, page: number = 10) {
     try {
       const query = this.userRepository.createQueryBuilder('users');
       if (role) {
@@ -123,5 +124,14 @@ export class UsersService {
     user.basket_items.splice(productIndex, -1);
 
     return this.userRepository.save(user);
+  }
+  async addRole(userId: number, role: Role) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['roles'],
+    });
+    if (!user) throw new NotFoundException('user not found');
+    user.roles.push(role);
+    return await this.userRepository.save(user);
   }
 }
