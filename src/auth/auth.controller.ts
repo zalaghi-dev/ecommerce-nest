@@ -68,6 +68,21 @@ export class AuthController {
       message: 'Role added for user successfully',
     });
   }
+  @Post('role/remove-from-user')
+  async removeRoleFromUser(
+    @Body() roleToUserDto: RoleToUserDto,
+    @Res() res: Response,
+  ) {
+    const userRole = await this.authService.removeRoleFromUser(
+      roleToUserDto.user_id,
+      roleToUserDto.role_id,
+    );
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      data: userRole,
+      message: 'Role removed from user successfully',
+    });
+  }
   @Get('get-user-permissions/:user_id')
   async getUserPermission(@Param('user_id') user_id: string) {
     const permissions = await this.authService.getUserPermissions(+user_id);

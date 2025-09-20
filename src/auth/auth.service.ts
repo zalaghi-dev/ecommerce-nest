@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -62,6 +63,15 @@ export class AuthService {
     if (!user.roles.find((r) => r.id === role.id)) {
       return await this.userService.addRole(userId, role);
     }
-    return false;
+    throw new BadRequestException('invalid data');
+  }
+  async removeRoleFromUser(userId: number, roleId: number) {
+    const user = await this.userService.findUserByPermission(userId);
+    const role = await this.roleRepository.findOne({ where: { id: roleId } });
+    if (!role) throw new NotFoundException('user role not found');
+    if (user.roles.find((r) => r.id === role.id)) {
+      return await this.userService.removeRole(userId, roleId);
+    }
+    throw new BadRequestException('invalid data');
   }
 }

@@ -134,4 +134,13 @@ export class UsersService {
     user.roles.push(role);
     return await this.userRepository.save(user);
   }
+  async removeRole(userId: number, roleId: number) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['roles'],
+    });
+    if (!user) throw new NotFoundException('user not found');
+    user.roles.filter((r) => r.id !== roleId);
+    return await this.userRepository.save(user);
+  }
 }
