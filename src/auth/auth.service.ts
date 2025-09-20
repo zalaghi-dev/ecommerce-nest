@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { Role } from './entities/role.entity';
+import { Permission } from './entities/permission.entity';
 @Injectable()
 export class AuthService {
   constructor(
@@ -17,6 +18,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,
+    @InjectRepository(Permission)
+    private readonly permissionRepository: Repository<Permission>,
   ) {}
 
   async register(mobile: string, password: string, display_name: string) {
@@ -78,5 +81,46 @@ export class AuthService {
   async getUserRoles(userId: number) {
     const user = await this.userService.findUserByPermission(userId);
     return user.roles;
+  }
+
+  // ============== Permission
+  async createPermission(name: string) {
+    const permission = this.permissionRepository.create({ name });
+    return await this.permissionRepository.save(permission);
+  }
+
+  async addPermissionToRole(permissionId: number, roleId: number) {
+    const role = await this.roleRepository.findOne({
+      where: { id: roleId },
+      relations: ['permissions'],
+    });
+    if (!role) throw new NotFoundException('Role not found');
+    if (!role.permissions.find((p) => p.id === permissionId)) {
+      const permission = await this.permissionRepository.findOne({
+        where: { id: permissionId },
+      });
+      if (!permission) throw new NotFoundException('Permission not found');
+      role.permissions.push(permission);
+    } else throw new BadRequestException('Permission Exists!');
+    return await this.roleRepository.save(role);
+  }
+  async addPermissionToUser(userId: number, permissionId: number) {
+    const user = await this.userService.findUserByPermission(userId);
+    const permission = await this.permissionRepository.findOne({
+      where: { id: permissionId },
+    });
+    if (!permission) throw new NotFoundException('user permission not found');
+    if (!user.permissions.find((r) => r.id === permission.id)) {
+      let assignedWithRole = false;
+      user.roles.forEach((role) => {
+        role.permissions.forEach((p) => {
+          if (p.id === permissionId) assignedWithRole = true;
+        });
+      });
+      if (assignedWithRole)
+        throw new BadRequestException('User already has this permission');
+      return await this.userService.addPermission(userId, permission);
+    }
+    throw new BadRequestException('invalid data');
   }
 }

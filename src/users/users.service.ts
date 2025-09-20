@@ -13,6 +13,7 @@ import { Repository } from 'typeorm';
 import { Product } from 'src/products/entities/product.entity';
 import RoleEnum from './enums/Role';
 import { Role } from 'src/auth/entities/role.entity';
+import { Permission } from 'src/auth/entities/permission.entity';
 
 @Injectable()
 export class UsersService {
@@ -141,6 +142,16 @@ export class UsersService {
     });
     if (!user) throw new NotFoundException('user not found');
     user.roles.filter((r) => r.id !== roleId);
+    return await this.userRepository.save(user);
+  }
+  // ================== Permission
+  async addPermission(userId: number, permission: Permission) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['permissions'],
+    });
+    if (!user) throw new NotFoundException('user not found');
+    user.permissions.push(permission);
     return await this.userRepository.save(user);
   }
 }
