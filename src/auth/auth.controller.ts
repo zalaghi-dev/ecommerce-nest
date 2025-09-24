@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Res,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -18,6 +19,7 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { PermissionDto } from './dto/permission.dto';
 import { PermissionToRole } from './dto/permission-to-role.dto';
 import { PermissionToUser } from './dto/permission-to-user.dto';
+import { LoggingInterceptor } from 'src/interceptors/logging.interceptor';
 
 @Public()
 @Controller('auth')
@@ -38,6 +40,7 @@ export class AuthController {
       message: 'Signed Up Successfully',
     });
   }
+  @UseInterceptors(LoggingInterceptor)
   @Post('login')
   async login(@Body() loginDto: LoginDto, @Res() res: Response) {
     const { mobile, password } = loginDto;
