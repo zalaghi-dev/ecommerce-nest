@@ -16,6 +16,7 @@ import { Response } from 'express';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import Role from 'src/users/enums/Role';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Permissions } from 'src/auth/decorators/permissions.decorator';
 @ApiBearerAuth()
 @Roles(Role.NormalUser)
 @Controller('address')
@@ -71,7 +72,7 @@ export class AddressController {
       message: 'Address updated!',
     });
   }
-
+  @Permissions('address:delete:own')
   @Delete(':id')
   async remove(@Res() res: Response, @Param('id') id: string) {
     await this.addressService.remove(+id);

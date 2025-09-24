@@ -23,6 +23,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Permissions } from 'src/auth/decorators/permissions.decorator';
 @ApiTags('Users Managment')
 @ApiBearerAuth()
 @Controller('users')
@@ -39,6 +40,8 @@ export class UsersController {
       message: 'User create success',
     });
   }
+
+  @Permissions('read:user')
   @ApiQuery({ name: 'role', required: false })
   @ApiQuery({ name: 'limit', required: false })
   @ApiQuery({ name: 'page', required: false })
@@ -56,6 +59,7 @@ export class UsersController {
       message: 'Users Found',
     });
   }
+  @Permissions('read:user')
   @Get(':id')
   async findOne(@Res() res: Response, @Param('id') id: string) {
     const user = await this.usersService.findOne(+id);
