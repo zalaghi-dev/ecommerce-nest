@@ -2,10 +2,8 @@ import {
   Body,
   Controller,
   Get,
-  HttpStatus,
   Param,
   Post,
-  Res,
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -27,81 +25,51 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  async register(@Body() registerDto: RegisterDto, @Res() res: Response) {
+  async register(@Body() registerDto: RegisterDto) {
     const { display_name, mobile, password } = registerDto;
     const register = await this.authService.register(
       mobile,
       password,
       display_name,
     );
-    return res.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
-      data: register,
-      message: 'Signed Up Successfully',
-    });
+    return register;
   }
   @UseInterceptors(LoggingInterceptor)
   @Post('login')
-  async login(@Body() loginDto: LoginDto, @Res() res: Response) {
+  async login(@Body() loginDto: LoginDto) {
     const { mobile, password } = loginDto;
     const login = await this.authService.login(mobile, password);
-    return res.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
-      data: login,
-      message: 'Logged In Successfully',
-    });
+    return login;
   }
   @ApiBearerAuth()
   @Post('role')
-  async newRole(@Body() createRole: RoleDto, @Res() res: Response) {
+  async newRole(@Body() createRole: RoleDto) {
     const role = await this.authService.createRole(createRole.name);
-    return res.status(HttpStatus.CREATED).json({
-      statusCode: HttpStatus.CREATED,
-      data: role,
-      message: 'Role created successfully',
-    });
+    return role;
   }
   @ApiBearerAuth()
   @Post('role/append-to-user')
-  async addRoleToUser(
-    @Body() roleToUserDto: RoleToUserDto,
-    @Res() res: Response,
-  ) {
+  async addRoleToUser(@Body() roleToUserDto: RoleToUserDto) {
     const userRole = await this.authService.addRoleToUser(
       roleToUserDto.user_id,
       roleToUserDto.role_id,
     );
-    return res.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
-      data: userRole,
-      message: 'Role added for user successfully',
-    });
+    return userRole;
   }
   @ApiBearerAuth()
   @Post('role/remove-from-user')
-  async removeRoleFromUser(
-    @Body() roleToUserDto: RoleToUserDto,
-    @Res() res: Response,
-  ) {
+  async removeRoleFromUser(@Body() roleToUserDto: RoleToUserDto) {
     const userRole = await this.authService.removeRoleFromUser(
       roleToUserDto.user_id,
       roleToUserDto.role_id,
     );
-    return res.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
-      data: userRole,
-      message: 'Role removed from user successfully',
-    });
+    return userRole;
   }
   @ApiBearerAuth()
   @Post('roles/get-user-roles/:user_id')
-  async getUserRoles(@Param('user_id') user_id: string, @Res() res: Response) {
+  async getUserRoles(@Param('user_id') user_id: string) {
     const roles = await this.authService.getUserRoles(+user_id);
-    return res.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
-      data: roles,
-      message: 'Roles found!',
-    });
+    return roles;
   }
 
   @ApiBearerAuth()
@@ -114,10 +82,7 @@ export class AuthController {
   // ================= Permission
   @ApiBearerAuth()
   @Post('permission')
-  async newPermission(
-    @Body() createPermission: PermissionDto,
-    @Res() res: Response,
-  ) {
+  async newPermission(@Body() createPermission: PermissionDto) {
     if (Array.isArray(createPermission.name)) {
       const created: string[] = [];
       await Promise.all(
@@ -126,66 +91,37 @@ export class AuthController {
           created.push(p);
         }),
       );
-      return res.status(HttpStatus.CREATED).json({
-        statusCode: HttpStatus.CREATED,
-        data: created,
-        message: 'Permissions created successfully',
-      });
+      return created;
     } else {
       const permission = await this.authService.createPermission(
         createPermission.name,
       );
-      return res.status(HttpStatus.CREATED).json({
-        statusCode: HttpStatus.CREATED,
-        data: permission,
-        message: 'Permission created successfully',
-      });
+      return permission;
     }
   }
   @ApiBearerAuth()
   @Post('permission/append-to-role')
-  async addPermissionToRole(
-    @Body() permissionToRole: PermissionToRole,
-    @Res() res: Response,
-  ) {
+  async addPermissionToRole(@Body() permissionToRole: PermissionToRole) {
     const permissionRole = await this.authService.addPermissionToRole(
       permissionToRole.permission_id,
       permissionToRole.role_id,
     );
-    return res.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
-      data: permissionRole,
-      message: 'Permission added for role successfully',
-    });
+    return permissionRole;
   }
 
   @ApiBearerAuth()
   @Post('permission/append-to-user')
-  async addPermissionToUser(
-    @Body() permissionToUserDto: PermissionToUser,
-    @Res() res: Response,
-  ) {
+  async addPermissionToUser(@Body() permissionToUserDto: PermissionToUser) {
     const userRole = await this.authService.addPermissionToUser(
       permissionToUserDto.user_id,
       permissionToUserDto.permission_id,
     );
-    return res.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
-      data: userRole,
-      message: 'Permission added to user successfully',
-    });
+    return userRole;
   }
   @ApiBearerAuth()
   @Post('roles/get-user-permissions/:user_id')
-  async getUserPermissions(
-    @Param('user_id') user_id: string,
-    @Res() res: Response,
-  ) {
+  async getUserPermissions(@Param('user_id') user_id: string) {
     const permissions = await this.authService.getUserPermissions(+user_id);
-    return res.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
-      data: permissions,
-      message: 'Permissions found!',
-    });
+    return permissions;
   }
 }
