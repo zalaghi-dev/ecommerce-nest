@@ -12,8 +12,7 @@ import { IpTrackerModule } from './ip-tracker/ip-tracker.module';
 import { IpTrackerMiddleware } from './ip-tracker/ip-tracker.middleware';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
-import { RolesGuard } from './auth/guards/roles.guard';
-import { PermissionsGuard } from './auth/guards/permissions.guard';
+import { SeederModule } from './seeder/seeder.module';
 @Module({
   imports: [
     // Config
@@ -38,6 +37,7 @@ import { PermissionsGuard } from './auth/guards/permissions.guard';
     CategoriesModule,
     OrdersModule,
     IpTrackerModule,
+    SeederModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })
