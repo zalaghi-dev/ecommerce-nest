@@ -21,7 +21,8 @@
     "db:up": "docker-compose -f docker-compose-db.yml up -d",
     "db:down": "docker-compose -f docker-compose-db.yml down",
     "db:logs": "docker-compose -f docker-compose-db.yml logs -f",
-    "db:ps": "docker-compose -f docker-compose-db.yml ps"
+    "db:ps": "docker-compose -f docker-compose-db.yml ps",
+    "seed": "ts-node -r tsconfig-paths/register src/seeders/seed.ts"
   },
   "dependencies": {
     "@nestjs/axios": "^4.0.1",
@@ -94,3 +95,4 @@
     "testEnvironment": "node"
   }
 }
+
