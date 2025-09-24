@@ -6,8 +6,7 @@ import {
   Patch,
   Param,
   Delete,
-  Res,
-  HttpStatus,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AddressService } from './address.service';
 import { CreateAddressDto } from './dto/create-address.dto';
@@ -17,48 +16,34 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import Role from 'src/users/enums/Role';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Permissions } from 'src/auth/decorators/permissions.decorator';
+import { ResponseInterceptor } from 'src/interceptors/response.interceptor';
 @ApiBearerAuth()
 @Roles(Role.NormalUser)
+@UseInterceptors(ResponseInterceptor)
 @Controller('address')
 export class AddressController {
   constructor(private readonly addressService: AddressService) {}
 
   @Post()
-  async create(
-    @Res() res: Response,
-    @Body() createAddressDto: CreateAddressDto,
-  ) {
+  async create(@Body() createAddressDto: CreateAddressDto) {
     const address = await this.addressService.create(createAddressDto);
-    return res.status(HttpStatus.CREATED).json({
-      statusCode: HttpStatus.CREATED,
-      data: address,
-      message: 'Address Created',
-    });
+    return address;
   }
 
   @Get()
-  async findAll(@Res() res: Response) {
+  async findAll() {
     const addresses = await this.addressService.findAll();
-    return res.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
-      data: addresses,
-      message: 'Addresses Found',
-    });
+    return addresses;
   }
 
   @Get(':id')
-  async findOne(@Res() res: Response, @Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     const address = await this.addressService.findOne(+id);
-    return res.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
-      data: address,
-      message: 'Address Found',
-    });
+    return address;
   }
 
   @Patch(':id')
   async update(
-    @Res() res: Response,
     @Param('id') id: string,
     @Body() updateAddressDto: UpdateAddressDto,
   ) {
@@ -66,20 +51,12 @@ export class AddressController {
       +id,
       updateAddressDto,
     );
-    return res.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
-      data: updatedAddress,
-      message: 'Address updated!',
-    });
+    return updatedAddress;
   }
   @Permissions('address:delete:own')
   @Delete(':id')
-  async remove(@Res() res: Response, @Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     await this.addressService.remove(+id);
-    return res.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
-      data: null,
-      message: 'Address deleted!',
-    });
+    return 'removed';
   }
 }
