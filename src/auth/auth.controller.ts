@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  UseFilters,
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -18,8 +19,10 @@ import { PermissionDto } from './dto/permission.dto';
 import { PermissionToRole } from './dto/permission-to-role.dto';
 import { PermissionToUser } from './dto/permission-to-user.dto';
 import { LoggingInterceptor } from 'src/interceptors/logging.interceptor';
+import { HttpExceptionFilter } from 'src/exceptions/http.exception';
 
 @Public()
+// @UseFilters(HttpExceptionFilter)
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
