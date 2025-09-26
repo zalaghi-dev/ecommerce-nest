@@ -5,6 +5,7 @@ import { LoggerMiddleware } from './middlewares/logger/logger.middleware';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ResponseInterceptor } from './interceptors/response.interceptor';
 import { HttpExceptionFilter } from './exceptions/http.exception';
+import { GlobalExceptionFilter } from './exceptions/global.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,7 +16,8 @@ async function bootstrap() {
   //!  For Using this we should remove @Res in each controller and return data
   app.useGlobalInterceptors(new ResponseInterceptor());
   // Filter global
-  app.useGlobalFilters(new HttpExceptionFilter());
+  // app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new GlobalExceptionFilter());
   // -------------- Swagger Config --------------
   const config = new DocumentBuilder()
     .setTitle('Ecommerce nest API documention')
