@@ -1,98 +1,122 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Ecommerce NestJS - Personal Testing Ground
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+⚠️ **DISCLAIMER: This is a TESTING project with NO commercial value and SHOULD NOT be used in production!**
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This project is purely for personal experimentation and learning purposes. It's intentionally messy, buggy, and non-standard.
 
-## Description
+## 🚨 Important Warnings
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **NO PRODUCTION USE**: This code is not suitable for any real-world application
+- **SECURITY ISSUES**: Contains deliberate security vulnerabilities for testing purposes
+- **BAD PRACTICES**: Intentionally implements anti-patterns and poor coding practices
+- **BUGS EVERYWHERE**: Known bugs and issues are left unfixed on purpose
+- **NO SUPPORT**: No maintenance, updates, or support will be provided
+- **USE AT YOUR OWN RISK**: No guarantees of functionality, security, or stability
 
-## Project setup
+## 🧪 What This Project Contains
 
+A messy NestJS e-commerce-like application for testing various concepts:
+
+### Core Modules
+- **Authentication & Authorization**: JWT, roles, permissions (with deliberate flaws)
+- **User Management**: CRUD operations with questionable validation
+- **Products & Categories**: Basic e-commerce entities
+- **Orders & Order Items**: Shopping cart and checkout simulation
+- **Address Management**: User address handling
+- **Tickets**: Support ticket system
+- **IP Tracking**: Request monitoring (privacy nightmare)
+
+### Technical Stack
+- **Backend**: NestJS, TypeORM, PostgreSQL
+- **Authentication**: Passport JWT
+- **Validation**: class-validator with intentional gaps
+- **Documentation**: Swagger/OpenAPI
+- **Database**: Docker PostgreSQL setup
+- **Testing**: Jest (barely implemented)
+
+### Known Issues & Anti-Patterns
+- Mixed authentication strategies
+- Inconsistent error handling
+- Poor database design
+- No proper logging
+- Minimal input validation
+- Hardcoded credentials
+- No rate limiting
+- Exposed sensitive endpoints
+- Mixed sync/async patterns
+- Poor TypeScript usage
+
+## 🏃‍♂️ Running This Mess
+
+### Prerequisites
+- Node.js 18+
+- Docker & Docker Compose
+- pnpm (or npm/yarn)
+
+### Setup
 ```bash
-$ pnpm install
+# Install dependencies
+pnpm install
+
+# Start database
+pnpm run db:up
+
+# Run database seeder
+pnpm run seed
+
+# Start the application
+pnpm run start:dev
 ```
 
-## Compile and run the project
-
+### Available Scripts
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+pnpm run start:dev    # Development server
+pnpm run build        # Build for production (why?)
+pnpm run test         # Run tests (good luck)
+pnpm run db:up        # Start PostgreSQL container
+pnpm run db:down      # Stop database
+pnpm run seed         # Seed initial data
 ```
 
-## Run tests
+### Database Access
+- **Host**: localhost:5000
+- **Username**: ecommerce-nest
+- **Password**: ecommerce-nest
+- **Database**: ecommerce-nest
 
-```bash
-# unit tests
-$ pnpm run test
+## 📚 API Documentation
 
-# e2e tests
-$ pnpm run test:e2e
+Once running, visit: http://localhost:3000/api/docs
 
-# test coverage
-$ pnpm run test:cov
-```
+## 🎯 Learning Objectives
 
-## Deployment
+This project helped explore:
+- NestJS module system and dependency injection
+- TypeORM relationships and migrations
+- JWT authentication and guards
+- Role-based access control
+- Request/response interceptors
+- Custom validators and decorators
+- Docker containerization
+- API documentation with Swagger
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## 🔥 What NOT to Learn From This
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+- Security best practices
+- Clean code principles
+- Proper error handling
+- Performance optimization
+- Testing strategies
+- Production deployment
+- Code organization
+- Git workflow
 
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
-```
+## 📝 License
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+UNLICENSED - Do whatever you want, but don't blame me for the consequences.
 
-## Resources
+## 💡 Final Note
 
-Check out a few resources that may come in handy when working with NestJS:
+This project represents months of chaotic experimentation. It's a testament to what happens when you throw best practices out the window and just try stuff. Perfect for learning what NOT to do in a real project.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+**Remember: This is intentionally bad code. Please don't use this as a reference for actual development work!**
